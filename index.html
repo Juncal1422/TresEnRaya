@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<title>Tres en Raya</title>
+	<style>
+		.contenido{
+			text-align:center;
+		}
+		.juego{
+			display: inline-block;
+			width:390px;
+			height:500px;
+			margin-top: 200px;
+			-webkit-box-shadow: 0px 0px 31px -8px rgba(0,0,0,0.75);
+			-moz-box-shadow: 0px 0px 31px -8px rgba(0,0,0,0.75);
+			box-shadow: 0px 0px 31px -8px rgba(0,0,0,0.75);
+		}
+		.titulo{
+			display: block;
+			font-size: 40px;
+		}
+		.tablero{
+			display: inline-block;
+		}
+		.casilla{
+			font-size:70px;
+			width:100px;
+			height:90px;
+			margin: 15px;
+			display:inline-block;
+			text-align: center;
+			-webkit-box-shadow: 0px 0px 31px -8px rgba(0,0,0,0.75);
+			-moz-box-shadow: 0px 0px 31px -8px rgba(0,0,0,0.75);
+			box-shadow: 0px 0px 31px -8px rgba(0,0,0,0.75);
+		}
+		.casilla:hover{
+			cursor: pointer;
+			-webkit-box-shadow: 0px 0px 40px -8px rgba(20,20,20,0.90);
+			-moz-box-shadow: 0px 0px 40px -8px rgba(20,20,20,0.90);
+			box-shadow: 0px 0px 40px -8px rgba(20,20,20,0.90);
+		}
+		.deshabilitado{
+			background: #CCCCCC;
+		}
+		.deshabilitado:hover{
+			cursor:not-allowed;
+		}
+		.jugador{
+			font-size: 20px;
+		}
+		.reset{
+			margin:10px;
+			padding:5px;
+			font-size: 20px;
+		}
+	</style>
+</head>
+<body id="cuerpo">
+	<div class="contenido">
+		<div id="juego" class="juego">
+			<div id="titulo" class="titulo">Tres en raya<br></div>
+			<div id="tablero" class="tablero"></div>
+			<div id="divJug" class="jugador">Turno del jugador 1</div>
+			<button id="btnReset" class="reset" onclick="recargar()">Reset</button>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	var aCasillas = [["-","-","-"],["-","-","-"],["-","-","-"]];
+	var tablero = document.getElementById('tablero');
+	var jugador = 1;
+	crearCasillas();
+	function crearCasillas(){
+		var div= document.createElement('div');
+		for(let i=0 ; i<3;i++){
+			for(let j=0; j<3;j++){
+				div = div.cloneNode(false);
+				div.removeEventListener("click", clickCasilla);
+				div.removeAttribute('class');
+				div.classList.add(i+""+j,'casilla');
+				div.addEventListener("click", clickCasilla);
+				div.innerHTML=aCasillas[i][j];
+				tablero.appendChild(div);
+			}
+		}
+	}
+	function clickCasilla(){
+		var clasesCasilla = this.classList;
+		var posicionCasilla = clasesCasilla.toString().substring(0,2);
+		console.log("Click en la casilla -"+posicionCasilla+"-");
+		this.classList.add('deshabilitado');
+		if(jugador==1){
+			this.innerHTML="o";
+			aCasillas[posicionCasilla.charAt(0)][posicionCasilla.charAt(1)]="o";
+			document.getElementById("divJug").innerHTML="Turno del jugador 2";
+			jugador=2;
+		} else {
+			this.innerHTML="x";
+			aCasillas[posicionCasilla.charAt(0)][posicionCasilla.charAt(1)]="x";
+			document.getElementById("divJug").innerHTML="Turno del jugador 1";
+			jugador=1;
+		}
+		this.removeEventListener("click", clickCasilla);
+		comprobarVictoria();
+	}
+	function comprobarVictoria(){
+		//Horizontales
+		if(aCasillas[0][0]==aCasillas[0][1]&&aCasillas[0][0]==aCasillas[0][2]){
+			if(aCasillas[0][0]=="o"){
+				victoria(1);
+			}else if(aCasillas[0][0]=="x"){
+				victoria(2);
+			}
+		}
+		if(aCasillas[1][0]==aCasillas[1][1]&&aCasillas[1][0]==aCasillas[1][2]){
+			if(aCasillas[1][0]=="o"){
+				victoria(1);
+			}else if(aCasillas[1][0]=="x"){
+				victoria(2);
+			}
+		}
+		if(aCasillas[2][0]==aCasillas[2][1]&&aCasillas[2][0]==aCasillas[2][2]){
+			if(aCasillas[2][0]=="o"){
+				victoria(1);
+			}else if(aCasillas[2][0]=="x"){
+				victoria(2);
+			}
+		}
+		//Diagonales
+		if(aCasillas[0][0]==aCasillas[1][1]&&aCasillas[0][0]==aCasillas[2][2]){
+			if(aCasillas[0][0]=="o"){
+				victoria(1);
+			}else if(aCasillas[0][0]=="x"){
+				victoria(2);
+			}
+		}
+		if(aCasillas[0][2]==aCasillas[1][1]&&aCasillas[0][2]==aCasillas[2][0]){
+			if(aCasillas[0][2]=="o"){
+				victoria(1);
+			}else if(aCasillas[0][2]=="x"){
+				victoria(2);
+			}
+		}
+		//Verticales
+		if(aCasillas[0][0]==aCasillas[1][0]&&aCasillas[0][0]==aCasillas[2][0]){
+			if(aCasillas[0][0]=="o"){
+				victoria(1);
+			}else if(aCasillas[0][0]=="x"){
+				victoria(2);
+			}
+		}
+		if(aCasillas[0][1]==aCasillas[1][1]&&aCasillas[0][1]==aCasillas[2][1]){
+			if(aCasillas[0][1]=="o"){
+				victoria(1);
+			}else if(aCasillas[0][1]=="x"){
+				victoria(2);
+			}
+		}
+		if(aCasillas[0][2]==aCasillas[1][2]&&aCasillas[0][2]==aCasillas[2][2]){
+			if(aCasillas[0][2]=="o"){
+				victoria(1);
+			}else if(aCasillas[0][2]=="x"){
+				victoria(2);
+			}
+		}
+	}
+	function victoria(jugador){
+		setTimeout(function() {
+			alert("Ha ganado el jug: "+jugador+"\nQuieres jugar de nuevo?");
+			document.getElementById("cuerpo").addEventListener("click",recargar);
+		}, 100);
+	}
+	function recargar(){
+		window.location.reload(false); 
+	}
+</script>
+</html>
